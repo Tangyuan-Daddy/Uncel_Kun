@@ -1,0 +1,19 @@
+server:
+  port: 7001
+spring:
+  application:
+    name: service-uncel
+  cloud:
+    nacos:
+      config:
+        server-addr: 182.92.230.190:8848
+        namespace: 416e307a-efed-444a-9cd6-979896800159
+        group: tydd
+        file-extension: yaml
+        prefix: ${spring.application.name}
+      discovery:
+        server-addr: ${spring.cloud.nacos.config.server-addr}
+        namespace: ${spring.cloud.nacos.config.namespace}
+        group: tydd
+  profiles:
+    active: dev
