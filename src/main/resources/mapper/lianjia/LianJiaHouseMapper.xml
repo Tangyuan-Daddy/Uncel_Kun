@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.tydd.webmagic.lianjia.mapper.LianJiaHouseMapper">
+
+    <resultMap id="averageResultMap" type="org.tydd.webmagic.lianjia.dto.AverageDto">
+        <result column="average" property="average"/>
+        <result column="total_count" property="totalCount"/>
+    </resultMap>
+
+    <select id="queryAverageUnitPrice" parameterType="java.util.Map" resultMap="averageResultMap">
+        SELECT ROUND(SUM(unit_price)/COUNT(*), 2) AS average, COUNT(*) AS total_count FROM t_lianjia_house
+        <where>
+            <if test="district != null">
+                and district = #{district}
+            </if>
+            <if test="communityName != null">
+                and community_name = #{community_name}
+            </if>
+            <if test="batchDate != null">
+                and DATE_FORMAT(create_time,'%Y-%m') = #{batchDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryAverageTotalPrice" parameterType="java.util.Map" resultMap="averageResultMap">
+        SELECT ROUND(SUM(total_price)/COUNT(*), 2) AS average, COUNT(*) AS total_count FROM t_lianjia_house
+        <where>
+            <if test="district != null">
+                and district = #{district}
+            </if>
+            <if test="communityName != null">
+                and community_name = #{community_name}
+            </if>
+            <if test="batchDate != null">
+                and DATE_FORMAT(create_time,'%Y-%m') = #{batchDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryCountByParam" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(*) as total_count from t_lianjia_house
+        <where>
+            <if test="district != null">
+                and district = #{district}
+            </if>
+            <if test="communityName != null">
+                and community_name = #{community_name}
+            </if>
+            <if test="batchDate != null">
+                and DATE_FORMAT(create_time,'%Y-%m') = #{batchDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryUnitPriceList" parameterType="java.util.Map" resultType="java.lang.Double">
+        select unit_price from t_lianjia_house
+        <where>
+            <if test="district != null">
+                and district = #{district}
+            </if>
+            <if test="communityName != null">
+                and community_name = #{community_name}
+            </if>
+            <if test="batchDate != null">
+                and DATE_FORMAT(create_time,'%Y-%m') = #{batchDate}
+            </if>
+        </where>
+        order by unit_price asc
+    </select>
+
+    <select id="queryTotalPriceList" parameterType="java.util.Map" resultType="java.lang.Double">
+        select total_price from t_lianjia_house
+        <where>
+            <if test="district != null">
+                and district = #{district}
+            </if>
+            <if test="communityName != null">
+                and community_name = #{community_name}
+            </if>
+            <if test="batchDate != null">
+                and DATE_FORMAT(create_time,'%Y-%m') = #{batchDate}
+            </if>
+        </where>
+        order by total_price asc
+    </select>
+
+</mapper>
