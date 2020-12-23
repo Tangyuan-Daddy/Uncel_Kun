@@ -143,7 +143,7 @@
         </resources>
     </build>
 
-    <profiles>
+    <!--<profiles>
         <profile>
             <id>dev</id>
             <properties>
@@ -159,18 +159,21 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
         </profile>
-    </profiles>
+    </profiles>-->
 
     <repositories>
         <repository>
-            <id>ihomefnt_maven_repo</id>
-            <name>ihome maven server</name>
-            <url>http://nexus.ihomefnt.com:8010/nexus/content/groups/public</url>
+            <id>central</id>
+            <name>aliyun maven</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <layout>default</layout>
+            <!-- 是否开启发布版构件下载 -->
             <releases>
                 <enabled>true</enabled>
             </releases>
+            <!-- 是否开启快照版构件下载 -->
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
         </repository>
     </repositories>
