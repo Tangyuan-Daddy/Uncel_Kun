@@ -7,13 +7,19 @@ import us.codecraft.webmagic.Site;
  * @author minkun
  * @Project Uncel Kun
  * @Package org.tydd.utils
- * @Description
+ * @Description Cookies工具类
  * @Date 2020/12/4
  */
 public class CookieUtil {
 
     private static String SPLIT_STR = ",";
 
+    /**
+     * 向爬虫的Site对象中添加cookies
+     * @param site
+     * @param cookies
+     * @return
+     */
     public static Site addCookieForSite(Site site, String cookies) {
         if (!StringUtils.isEmpty(cookies)) {
             String[] cookieArray = cookies.split(SPLIT_STR);

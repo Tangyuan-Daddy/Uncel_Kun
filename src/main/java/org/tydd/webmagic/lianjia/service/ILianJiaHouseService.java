@@ -21,6 +21,8 @@ public interface ILianJiaHouseService {
      */
     void buildStatistics(LianJiaHouseQueryDto queryDto);
 
+    void buildStatisticsByCommunity(LianJiaHouseQueryDto queryDto);
+
     /**
      * 获取统计数据
      * @param queryDto

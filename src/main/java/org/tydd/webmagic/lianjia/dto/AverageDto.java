@@ -15,4 +15,10 @@ public class AverageDto {
     private Double average;
 
     private Integer totalCount;
+
+    private Double averageUnitPrice;
+
+    private Double averageTotalPrice;
+
+    private String community;
 }

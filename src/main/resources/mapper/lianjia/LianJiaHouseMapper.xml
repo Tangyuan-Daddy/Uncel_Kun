@@ -7,6 +7,13 @@
         <result column="total_count" property="totalCount"/>
     </resultMap>
 
+    <resultMap id="statisticsDateResultMap" type="org.tydd.webmagic.lianjia.dto.AverageDto">
+        <result column="total_count" property="totalCount"/>
+        <result column="average_unit_price" property="averageUnitPrice"/>
+        <result column="average_total_price" property="averageTotalPrice"/>
+        <result column="community" property="community"/>
+    </resultMap>
+
     <select id="queryAverageUnitPrice" parameterType="java.util.Map" resultMap="averageResultMap">
         SELECT ROUND(SUM(unit_price)/COUNT(*), 2) AS average, COUNT(*) AS total_count FROM t_lianjia_house
         <where>
@@ -82,6 +89,19 @@
             </if>
         </where>
         order by total_price asc
+    </select>
+
+    <select id="queryStatisticsDataByCommunity" parameterType="java.util.Map" resultMap="statisticsDateResultMap">
+        SELECT
+            community_name AS community,
+            ROUND(SUM(unit_price)/ COUNT(*), 2) AS average_unit_price,
+            ROUND(SUM(total_price)/ COUNT(*), 2) AS average_total_price,
+            COUNT(*) AS total_count
+        FROM
+            t_lianjia_house
+        WHERE
+            district = #{district}
+        GROUP BY community_name ORDER BY total_count DESC LIMIT #{statisticsCount}
     </select>
 
 </mapper>

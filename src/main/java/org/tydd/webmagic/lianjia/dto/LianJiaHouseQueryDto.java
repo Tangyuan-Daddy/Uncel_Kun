@@ -18,8 +18,11 @@ public class LianJiaHouseQueryDto {
     private String district;
 
     /** 小区 */
-    private String communityName;
+    private String community;
 
     /** 统计时间 */
     private String batchDate;
+
+    /** 统计类型 */
+    private String statisticsType;
 }

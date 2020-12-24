@@ -55,6 +55,38 @@ public class LianJiaHouseServiceImpl implements ILianJiaHouseService {
         }
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void buildStatisticsByCommunity(LianJiaHouseQueryDto queryDto) {
+        List<String> districtList = lianJiaHouseMapper.queryDistrictList();
+        if (!CollectionUtils.isEmpty(districtList)) {
+            List<LianJiaHouseStatisticsEntity> statisticsList = new ArrayList<>();
+            Map<String, Object> queryMap = new HashMap<>();
+            queryMap.put("statisticsCount", 10);
+            districtList.forEach(district -> {
+                queryMap.put("district", district);
+                List<AverageDto> averageList = lianJiaHouseMapper.queryStatisticsDataByCommunity(queryMap);
+                if (!CollectionUtils.isEmpty(averageList)) {
+                    averageList.forEach(average -> {
+                        LianJiaHouseStatisticsEntity statistics = new LianJiaHouseStatisticsEntity();
+                        BeanUtils.copyProperties(average, statistics);
+                        statistics.setBatchDate(queryDto.getBatchDate());
+                        statistics.setDistrict(district);
+                        statistics.setStatisticsType(LianJiaCommon.STATISTICS_TYPE_COMMUNITY);
+                        statisticsList.add(statistics);
+                    });
+                }
+            });
+
+            if (!CollectionUtils.isEmpty(statisticsList)) {
+                statisticsList.forEach(statistics -> {
+                    lianJiaHouseStatisticsMapper.insert(statistics);
+                });
+            }
+        }
+
+    }
+
     /**
      * 获取统计数据
      * @param queryDto
@@ -114,7 +146,7 @@ public class LianJiaHouseServiceImpl implements ILianJiaHouseService {
     @Transactional(readOnly = true)
     public AverageDto getAverageUnitPrice(LianJiaHouseQueryDto queryDto) {
         Map<String, Object> queryMap = new HashMap<>();
-        queryMap.put("communityName", queryDto.getCommunityName());
+        queryMap.put("communityName", queryDto.getCommunity());
         queryMap.put("district", queryDto.getDistrict());
         queryMap.put("batchDate", queryDto.getBatchDate());
         return lianJiaHouseMapper.queryAverageUnitPrice(queryMap);
@@ -129,7 +161,7 @@ public class LianJiaHouseServiceImpl implements ILianJiaHouseService {
     @Transactional(readOnly = true)
     public AverageDto getAverageTotalPrice(LianJiaHouseQueryDto queryDto) {
         Map<String, Object> queryMap = new HashMap<>();
-        queryMap.put("communityName", queryDto.getCommunityName());
+        queryMap.put("communityName", queryDto.getCommunity());
         queryMap.put("district", queryDto.getDistrict());
         queryMap.put("batchDate", queryDto.getBatchDate());
         return lianJiaHouseMapper.queryAverageUnitPrice(queryMap);

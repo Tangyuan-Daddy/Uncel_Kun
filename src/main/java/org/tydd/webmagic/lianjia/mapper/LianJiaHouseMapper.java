@@ -34,4 +34,6 @@ public interface LianJiaHouseMapper extends BaseMapper<LianJiaHouseEntity> {
     ArrayList<Double> queryUnitPriceList(Map<String, Object> queryMap);
 
     ArrayList<Double> queryTotalPriceList(Map<String, Object> queryMap);
+
+    List<AverageDto> queryStatisticsDataByCommunity(Map<String, Object> queryMap);
 }

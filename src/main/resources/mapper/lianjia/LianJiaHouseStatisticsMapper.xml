@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.tydd.webmagic.lianjia.mapper.LianJiaHouseStatisticsMapper">
+
+    <resultMap id="baseResultMap" type="org.tydd.webmagic.lianjia.entity.LianJiaHouseStatisticsEntity">
+        <id column="id" property="id"/>
+        <result column="batch_date" property="batchDate"/>
+        <result column="district" property="district"/>
+        <result column="community" property="community"/>
+        <result column="statistics_type" property="statisticsType"/>
+        <result column="total_count" property="totalCount"/>
+        <result column="average_unit_price" property="averageUnitPrice"/>
+        <result column="average_total_price" property="averageTotalPrice"/>
+        <result column="median_unit_price" property="medianUnitPrice"/>
+        <result column="median_total_price" property="medianTotalPrice"/>
+    </resultMap>
+
+    <select id="queryHouseStatisticsList" parameterType="java.util.Map" resultMap="baseResultMap">
+        SELECT
+            id,
+            batch_date,
+            district,
+            community,
+            statistics_type,
+            total_count,
+            average_unit_price,
+            average_total_price,
+            median_unit_price,
+            median_total_price
+        FROM
+            t_lianjia_house_statistics
+        <where>
+            <if test="district != null">
+                and district = #{district}
+            </if>
+            <if test="community != null">
+                and community = #{community}
+            </if>
+            <if test="statisticsType != null">
+                and statistics_type = #{statisticsType}
+            </if>
+            <if test="batchDate != null">
+                and batch_date = #{batchDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryHouseStatisticsPage" parameterType="java.util.Map" resultMap="baseResultMap">
+        SELECT
+            id,
+            batch_date,
+            district,
+            community,
+            statistics_type,
+            total_count,
+            average_unit_price,
+            average_total_price,
+            median_unit_price,
+            median_total_price
+        FROM
+            t_lianjia_house_statistics
+        <where>
+            <if test="queryMap.district != null">
+                and district = #{queryMap.district}
+            </if>
+            <if test="queryMap.community != null">
+                and community = #{queryMap.community}
+            </if>
+            <if test="queryMap.statisticsType != null">
+                and statistics_type = #{queryMap.statisticsType}
+            </if>
+            <if test="queryMap.batchDate != null">
+                and batch_date = #{queryMap.batchDate}
+            </if>
+        </where>
+        order by total_count desc
+    </select>
+
+    <select id="queryLastBatchData" parameterType="java.util.Map" resultType="java.lang.String">
+        select batch_date from t_lianjia_house_statistics
+        <where>
+            <if test="district != null">
+                and district = #{district}
+            </if>
+            <if test="community != null">
+                and community = #{community}
+            </if>
+        </where>
+        order by batch_date desc limit 1
+    </select>
+
+</mapper>
