@@ -65,7 +65,7 @@ public class ImageHandleServiceImpl implements IImageHandleService {
                         .scale(1f)
                         .outputQuality(compressionRatio)
                         .toFile(fileRootPath + "/compression/" + filePath.getAbsoluteFile().getName());
-                compressionImageUrl = baseUrl + filePath.getAbsoluteFile().getName();
+                compressionImageUrl = baseUrl + "/compression/" + filePath.getAbsoluteFile().getName();
             } catch (IOException e) {
                 log.error("图片压缩异常。", e);
             }
