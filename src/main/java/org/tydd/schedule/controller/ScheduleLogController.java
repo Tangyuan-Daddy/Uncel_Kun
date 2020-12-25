@@ -28,6 +28,6 @@ public class ScheduleLogController {
 
     @GetMapping(value = "/list")
     public ResponseVo getScheduleLogList(String scheduleType, Long start, Long limit) {
-        return ResponseVo.getSuccess(scheduleLogService.getScheduleListPage(scheduleType, start, limit));
+        return ResponseVo.success(scheduleLogService.getScheduleListPage(scheduleType, start, limit));
     }
 }

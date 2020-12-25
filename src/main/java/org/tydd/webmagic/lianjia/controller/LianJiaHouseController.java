@@ -44,7 +44,7 @@ public class LianJiaHouseController {
         LianJiaHouseQueryDto queryDto = new LianJiaHouseQueryDto();
         queryDto.setStatisticsType(LianJiaCommon.STATISTICS_TYPE_DISTRICT);
         queryDto.setBatchDate(batchDate);
-        return ResponseVo.getSuccess(lianJiaHouseStatisticsService.getHouseStatisticsListByDistrict(queryDto));
+        return ResponseVo.success(lianJiaHouseStatisticsService.getHouseStatisticsListByDistrict(queryDto));
     }
 
     /**
@@ -58,7 +58,7 @@ public class LianJiaHouseController {
             // 不指定批次时间，默认取最后一次统计时间
             queryDto.setBatchDate(lianJiaHouseStatisticsService.getLastStatisticalTime());
         }
-        return ResponseVo.getSuccess(lianJiaHouseStatisticsService.getHouseStatisticsByCommunity(queryDto));
+        return ResponseVo.success(lianJiaHouseStatisticsService.getHouseStatisticsByCommunity(queryDto));
     }
 
     /**
@@ -72,6 +72,6 @@ public class LianJiaHouseController {
         queryDto.setBatchDate(batchDate);
         lianJiaHouseService.buildStatistics(queryDto);
         lianJiaHouseService.buildStatisticsByCommunity(queryDto);
-        return ResponseVo.getSuccess();
+        return ResponseVo.success();
     }
 }

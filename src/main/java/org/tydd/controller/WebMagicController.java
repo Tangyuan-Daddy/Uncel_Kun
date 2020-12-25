@@ -25,6 +25,6 @@ public class WebMagicController {
     @GetMapping(value = "/execute/lianjia")
     public ResponseVo executeLianJia() {
         lianjiaHousePageProcessor.executeAsync();
-        return ResponseVo.getSuccess();
+        return ResponseVo.success();
     }
 }
