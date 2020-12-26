@@ -43,7 +43,7 @@ public class ImageHandleController {
     @RequestMapping(value = "/handle/compression", method = RequestMethod.POST)
     @ResponseBody
     public ResponseVo compressionImage(@RequestParam("imageFile") MultipartFile imageFile, @RequestParam("ratio") Float ratio) {
-        log.info("image name = " + imageFile.getOriginalFilename() + ", image size = " + imageFile.getSize());
+        log.info("image name = " + imageFile.getOriginalFilename() + ", image size = " + (imageFile.getSize() / 1024) + "KB");
         return ResponseVo.success(imageHandleService.compressionImage(imageFile, ratio));
     }
 
