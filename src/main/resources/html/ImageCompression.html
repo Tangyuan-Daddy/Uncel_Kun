@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>在线图片压缩工具</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>在线图片压缩工具</h1>
+        <div>
+            <div class="form-group">
+                <label for="imageFile" class="col-sm-3 control-label" accept=".jpg">上传文件（jpg格式图片）：</label>
+                <input type="file" id="imageFile" name="imageFile">
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">选择需要压缩的比例：</label>
+                <label class="radio-inline">
+                    <input type="radio" name="ratio" id="r1" value="0.8" checked> 80%
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="ratio" id="r2" value="0.5"> 50%
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="ratio" id="r3" value="0.3"> 30%
+                </label>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary" id="upload-btn" type="button">提交</button>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div id="y-div">
+            <div class="form-group">
+                <h4 class="text-danger">压缩后图片预览图：</h4>
+                <img id="y-img" src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1004141437,4052351090&fm=26&gp=0.jpg" alt="压缩后图片" class="img-rounded" style="max-height: 600px;max-width: 600px">
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary" id="down-btn" type="button">下载图片</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        function uploadFile() {
+            $('#upload-btn').click(function () {
+                var imageFile = $('#imageFile')[0].files[0];
+                if (imageFile == null) {
+                    alert("未选择图片");
+                    return;
+                }
+                var formData = new FormData();
+                formData.append("imageFile", imageFile);
+                formData.append("ratio", $("input[name='ratio']:checked").val());
+                $.ajax({
+                    url:'http://182.92.230.190/tydd/image/handle/compression',
+                    dataType:'json',
+                    type:'POST',
+                    async: false,
+                    data: formData,
+                    processData : false, // 使数据不做处理
+                    contentType : false, // 不要设置Content-Type请求头
+                    success: function(data){
+                        //console.log(data);
+                        if (data.code == '1') {
+                            alert('上传成功！');
+                            var url = data.data;
+                            $("#y-img").attr("src", url);
+                            $("#y-div").attr("hidden", false);
+                        }
+                    },
+                    error:function(response){
+                        //console.log(response);
+                    }
+                });
+            })
+        };
+        function downloadImg(){
+            $('#down-btn').click(function () {
+                var url = $("#y-img").attr("src");
+                ajax(url, function(xhr) {
+                    var filename = (new Date()).valueOf() + "." + url.replace(/(.*\.)/, '') // 自定义文件名+后缀
+                    downloadFile(xhr.response, filename)
+                }, {
+                    responseType: 'blob'
+                })
+            });
+        }
+        function downloadFile(content, filename) {
+            var a = document.createElement('a')
+            var blob = new Blob([content])
+            var url = window.URL.createObjectURL(blob)
+            a.href = url
+            a.download = filename
+            a.click()
+            window.URL.revokeObjectURL(url)
+        }
+        function ajax(url, callback, options) {
+            window.URL = window.URL || window.webkitURL
+            var xhr = new XMLHttpRequest()
+            xhr.open('get', url, true)
+            if (options.responseType) {
+                xhr.responseType = options.responseType
+            }
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    callback(xhr)
+                }
+            }
+            xhr.send()
+        }
+        $(function(){
+            $("#y-div").attr("hidden", true);
+            uploadFile();
+            downloadImg();
+        });
+    </script>
+</body>
+</html>
