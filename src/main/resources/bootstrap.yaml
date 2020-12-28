@@ -15,9 +15,3 @@ spring:
         group: tydd
   profiles:
     active: prod
-#logging:
-#  level:
-#    org:
-#      tydd:
-#        webmagic:
-#          lianjia: DEBUG
