@@ -11,6 +11,7 @@ import org.tydd.tax.dto.TaxRateDto;
 import org.tydd.tax.service.ICalculationTaxService;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -31,7 +32,7 @@ public class TaxTest {
 
     @Test
     public void testGetTaxRate() {
-        LinkedList<TaxRateDto> taxRates = taxCalculationService.getTaxRate();
+        ArrayList<TaxRateDto> taxRates = taxCalculationService.getTaxRate();
         log.info(taxRates.toString());
     }
 }

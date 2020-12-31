@@ -6,6 +6,7 @@ import org.tydd.tax.vo.CalculationTaxViewVo;
 import org.tydd.tax.vo.CalculationTaxVo;
 import org.tydd.tax.vo.SpecialDeductionVo;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -21,7 +22,7 @@ public interface ICalculationTaxService {
      * 获取税率表
      * @return
      */
-    LinkedList<TaxRateDto> getTaxRate();
+    ArrayList<TaxRateDto> getTaxRate();
 
     /**
      * 计算个税
@@ -38,5 +39,5 @@ public interface ICalculationTaxService {
      * @param totalTaxIncome   累计纳税总额
      * @return
      */
-    CalculationTaxViewVo computeTaxableIncome(CalculationTaxDto calculationTax, SpecialDeductionVo specialDeduction, Integer period, Double totalTaxIncome);
+    CalculationTaxViewVo computeTaxableIncome(CalculationTaxDto calculationTax, SpecialDeductionVo specialDeduction, Integer period, Double totalTaxIncome, Double totalTaxes);
 }

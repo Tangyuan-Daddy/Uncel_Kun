@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +14,8 @@ import org.tydd.common.ResponseVo;
 import org.tydd.tax.dto.CalculationTaxDto;
 import org.tydd.tax.service.ICalculationTaxService;
 
+import javax.annotation.Resource;
+
 /**
  * @author minkun
  * @Project UncleK
@@ -20,13 +23,14 @@ import org.tydd.tax.service.ICalculationTaxService;
  * @Description 个税计算
  * @Date 2020/12/29
  */
-@Api(value="个人所得税")
+@Api(tags = "个人所得税")
 @Slf4j
 @RestController
 @RequestMapping(value = "tax")
 public class CalculationTaxController {
 
-    @Autowired
+    @Resource
+    @Qualifier("taxCalculationService")
     private ICalculationTaxService calculationTaxService;
 
     @ApiOperation(value = "计算个税 - 按月", notes = "按照月份累进计算个税")

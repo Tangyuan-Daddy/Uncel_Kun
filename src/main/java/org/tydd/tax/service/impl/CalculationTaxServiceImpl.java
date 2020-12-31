@@ -1,7 +1,9 @@
 package org.tydd.tax.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.nacos.client.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.tydd.tax.config.CalculationTaxConfig;
@@ -13,9 +15,9 @@ import org.tydd.tax.vo.CalculationTaxVo;
 import org.tydd.tax.vo.SpecialDeductionVo;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,14 +50,10 @@ public class CalculationTaxServiceImpl implements ICalculationTaxService {
      * @return
      */
     @Override
-    public LinkedList<TaxRateDto> getTaxRate() {
-        LinkedList<TaxRateDto> taxRateList = new LinkedList<>();
-        try {
-            taxRateList = (LinkedList<TaxRateDto>) JSONUtils.deserializeObject(taxInstall, taxRateList.getClass());
-            log.info("taxInstall = " + taxRateList);
-        } catch (IOException e) {
-            log.info("获取税率表转Json异常", e);
-        }
+    public ArrayList<TaxRateDto> getTaxRate() {
+        ArrayList<TaxRateDto> taxRateList = new ArrayList<>();
+        taxRateList.addAll(JSONArray.parseArray(taxInstall, TaxRateDto.class));
+        log.info("taxInstall = " + taxRateList);
         return taxRateList;
     }
 
@@ -70,13 +68,15 @@ public class CalculationTaxServiceImpl implements ICalculationTaxService {
         // 获取专项扣除额度（五险一金）
         SpecialDeductionVo specialDeduction = this.getSpecialDeduction(calculationTax);
         List<CalculationTaxViewVo> viewList = new LinkedList();
-        Double totalTaxIncome = 0d;
-        Double afterTaxIncome = 0d;
+        Double totalTaxIncome = 0d; // 累计应纳税所得额
+        Double afterTaxIncome = 0d; // 累进税后收入
+        Double totalTaxes = 0d; // 累计缴纳税金
         for (int i = 1; i <= totalPeriod; i++) {
-            CalculationTaxViewVo calculationTaxViewVo = computeTaxableIncome(calculationTax, specialDeduction, i, totalTaxIncome);
+            CalculationTaxViewVo calculationTaxViewVo = computeTaxableIncome(calculationTax, specialDeduction, i, totalTaxIncome, totalTaxes);
             viewList.add(calculationTaxViewVo);
-            totalTaxIncome += calculationTaxViewVo.getTaxes();
+            totalTaxIncome += calculationTaxViewVo.getTaxableIncome();
             afterTaxIncome += calculationTaxViewVo.getAfterTaxIncome();
+            totalTaxes = calculationTaxViewVo.getTotalTaxes();
         }
         CalculationTaxVo calculationTaxVo = new CalculationTaxVo();
         calculationTaxVo.setViewList(viewList);
@@ -94,10 +94,12 @@ public class CalculationTaxServiceImpl implements ICalculationTaxService {
      * @return
      */
     @Override
-    public CalculationTaxViewVo computeTaxableIncome(CalculationTaxDto calculationTax, SpecialDeductionVo specialDeduction, Integer period, Double totalTaxIncome) {
+    public CalculationTaxViewVo computeTaxableIncome(CalculationTaxDto calculationTax, SpecialDeductionVo specialDeduction, Integer period, Double totalTaxIncome, Double totalTaxes) {
         CalculationTaxViewVo calculationTaxView = new CalculationTaxViewVo();
         calculationTaxView.setSpecialDeduction(specialDeduction);
         calculationTaxView.setPeriod(period);
+        calculationTaxView.setTaxes(0d);
+        calculationTaxView.setAfterTaxIncome(0d);
         // 应纳税所得额
         Double taxableIncome = 0d;
         // 税前收入
@@ -109,7 +111,7 @@ public class CalculationTaxServiceImpl implements ICalculationTaxService {
             if (taxableIncome > specialDeduction.getTotalSpecialDeduction()) {
                 // 扣除专项扣除额度（五险一金）
                 taxableIncome = taxableIncome - specialDeduction.getTotalSpecialDeduction();
-                // 获取附加扣除额
+                // 扣除附加扣除额
                 Double additionalDeduction = getAdditionalDeduction(calculationTax);
                 if (taxableIncome > additionalDeduction) {
                     taxableIncome = taxableIncome - additionalDeduction;
@@ -118,9 +120,43 @@ public class CalculationTaxServiceImpl implements ICalculationTaxService {
                 }
             }
         }
+        calculationTaxView.setTaxableIncome(taxableIncome);
+        calculationTaxView.setTotalTaxableIncome(totalTaxIncome + taxableIncome);
         log.info("taxableIncome = " + taxableIncome);
-        calculationTaxView.setTaxes(0d);
-        calculationTaxView.setAfterTaxIncome(0d);
+        if (taxableIncome > 0) {
+            ArrayList<TaxRateDto> taxRateDtos = getTaxRate();
+            if (!CollectionUtils.isEmpty(taxRateDtos)) {
+                Double finalTaxableIncome = taxableIncome;
+                int size = taxRateDtos.size();
+                for (int i = 0; i < size; i++) {
+                    TaxRateDto taxRateDto = taxRateDtos.get(i);
+                    if (calculationTaxView.getTotalTaxableIncome() > taxRateDto.getIncomeMin() && calculationTaxView.getTotalTaxableIncome() <= taxRateDto.getIncomeMax()) {
+                        // 判断是否跨多个税率区间
+                        if ((calculationTaxView.getTotalTaxableIncome() - taxRateDto.getIncomeMin()) <= finalTaxableIncome && i != 0) {
+                            // 跨两个税率
+                            TaxRateDto firstRateDto = taxRateDtos.get(i - 1);
+                            int firstRate = firstRateDto.getTaxRate();
+                            Double firstTaxes = Double.valueOf(String.format("%.2f", ((firstRateDto.getIncomeMax() - totalTaxIncome) / 100 * firstRate)));
+                            int rate = taxRateDto.getTaxRate();
+                            Double secondTaxes = Double.valueOf(String.format("%.2f", (calculationTaxView.getTotalTaxableIncome() - taxRateDto.getIncomeMin()) / 100 * rate));
+                            calculationTaxView.setTaxes(firstTaxes + secondTaxes);
+                            calculationTaxView.setAfterTaxIncome(preTaxIncome - calculationTaxView.getSpecialDeduction().getTotalSpecialDeduction() - calculationTaxView.getTaxes());
+                            calculationTaxView.setTaxRate(rate);
+                        } else {
+                            // 单个税率区间
+                            int rate = taxRateDto.getTaxRate();
+                            calculationTaxView.setTaxes(Double.valueOf(String.format("%.2f", (finalTaxableIncome / 100 * rate))));
+                            calculationTaxView.setAfterTaxIncome(preTaxIncome - calculationTaxView.getSpecialDeduction().getTotalSpecialDeduction() - calculationTaxView.getTaxes());
+                            calculationTaxView.setTaxRate(rate);
+                        }
+                        calculationTaxView.setTotalTaxes(totalTaxes + calculationTaxView.getTaxes());
+                        break;
+                    }
+                }
+            }
+        } else {
+            calculationTaxView.setAfterTaxIncome(preTaxIncome - calculationTaxView.getSpecialDeduction().getTotalSpecialDeduction());
+        }
         return calculationTaxView;
     }
 
