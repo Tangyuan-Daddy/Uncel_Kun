@@ -76,7 +76,7 @@ public class CalculationTaxServiceImpl implements ICalculationTaxService {
             viewList.add(calculationTaxViewVo);
             totalTaxIncome += calculationTaxViewVo.getTaxableIncome();
             afterTaxIncome += calculationTaxViewVo.getAfterTaxIncome();
-            totalTaxes = calculationTaxViewVo.getTotalTaxes();
+            totalTaxes += calculationTaxViewVo.getTaxes();
         }
         CalculationTaxVo calculationTaxVo = new CalculationTaxVo();
         calculationTaxVo.setViewList(viewList);
@@ -149,7 +149,7 @@ public class CalculationTaxServiceImpl implements ICalculationTaxService {
                             calculationTaxView.setAfterTaxIncome(preTaxIncome - calculationTaxView.getSpecialDeduction().getTotalSpecialDeduction() - calculationTaxView.getTaxes());
                             calculationTaxView.setTaxRate(rate);
                         }
-                        calculationTaxView.setTotalTaxes(totalTaxes + calculationTaxView.getTaxes());
+                        calculationTaxView.setTotalTaxes(totalTaxes);
                         break;
                     }
                 }

@@ -3,7 +3,6 @@ package org.tydd.tax.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.tydd.common.ResponseVo;
 import org.tydd.tax.dto.CalculationTaxDto;
 import org.tydd.tax.service.ICalculationTaxService;
+import org.tydd.tax.vo.CalculationTaxVo;
 
 import javax.annotation.Resource;
 
@@ -35,7 +35,7 @@ public class CalculationTaxController {
 
     @ApiOperation(value = "计算个税 - 按月", notes = "按照月份累进计算个税")
     @PostMapping(value = "/calculation/month")
-    public ResponseVo calculationTaxForMonth(@Validated @RequestBody CalculationTaxDto calculationTax) {
+    public ResponseVo<CalculationTaxVo> calculationTaxForMonth(@Validated @RequestBody CalculationTaxDto calculationTax) {
         return ResponseVo.success(calculationTaxService.calculateTax(calculationTax));
     }
 }
