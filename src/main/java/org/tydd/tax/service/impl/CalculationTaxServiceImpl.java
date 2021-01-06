@@ -21,6 +21,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.tydd.common.CalculationTaxCommon.CHECK_FLAG;
+import static org.tydd.common.CalculationTaxCommon.SPORT_OLD_MAN_AVERAGE_FLAG;
+
 /**
  * @author minkun
  * @Project UncleK
@@ -31,12 +34,6 @@ import java.util.List;
 @Slf4j
 @Service("taxCalculationService")
 public class CalculationTaxServiceImpl implements ICalculationTaxService {
-
-    /** 选中 */
-    private final static String CHECK_FLAG = "1";
-
-    /** 未选中 */
-    private final static String NOT_CHECK_FLAG = "2";
 
     @Resource
     private CalculationTaxConfig calculationTaxConfig;
@@ -68,9 +65,12 @@ public class CalculationTaxServiceImpl implements ICalculationTaxService {
         // 获取专项扣除额度（五险一金）
         SpecialDeductionVo specialDeduction = this.getSpecialDeduction(calculationTax);
         List<CalculationTaxViewVo> viewList = new LinkedList();
-        Double totalTaxIncome = 0d; // 累计应纳税所得额
-        Double afterTaxIncome = 0d; // 累进税后收入
-        Double totalTaxes = 0d; // 累计缴纳税金
+        // 累计应纳税所得额
+        Double totalTaxIncome = 0d;
+        // 累进税后收入
+        Double afterTaxIncome = 0d;
+        // 累计缴纳税金
+        Double totalTaxes = 0d;
         for (int i = 1; i <= totalPeriod; i++) {
             CalculationTaxViewVo calculationTaxViewVo = computeTaxableIncome(calculationTax, specialDeduction, i, totalTaxIncome, totalTaxes);
             viewList.add(calculationTaxViewVo);
@@ -190,24 +190,32 @@ public class CalculationTaxServiceImpl implements ICalculationTaxService {
      */
     private Double getAdditionalDeduction(CalculationTaxDto calculationTax) {
         Double additionalDeduction = 0d;
+        // 子女教育
         if (CHECK_FLAG.equals(calculationTax.getChildEducation())) {
             additionalDeduction += calculationTaxConfig.getChildEducation();
         }
+        // 继续教育附加扣除-学历教育
         if (CHECK_FLAG.equals(calculationTax.getContinuingEducationA())) {
             additionalDeduction += calculationTaxConfig.getContinuingEducationA();
         }
+        // 继续教育附加扣除-职业资格
         if (CHECK_FLAG.equals(calculationTax.getContinuingEducationB())) {
             additionalDeduction += calculationTaxConfig.getContinuingEducationB();
         }
+        // 住房贷款
         if (CHECK_FLAG.equals(calculationTax.getHousingLoan())) {
             additionalDeduction += calculationTaxConfig.getHousingLoan();
         }
+        // 住房租金
         if (CHECK_FLAG.equals(calculationTax.getHousingRent())) {
             additionalDeduction += calculationTaxConfig.getHousingRent();
         }
+        // 赡养老人
         if (CHECK_FLAG.equals(calculationTax.getSupportOldMan())) {
+            // 独生子女独占
             additionalDeduction += calculationTaxConfig.getSupportOldMan();
-        } else if ("3".equals(calculationTax.getSupportOldMan())) {
+        } else if (SPORT_OLD_MAN_AVERAGE_FLAG.equals(calculationTax.getSupportOldMan())) {
+            // 平分
             additionalDeduction += calculationTaxConfig.getSupportOldMan() / 2;
         }
         return additionalDeduction;
