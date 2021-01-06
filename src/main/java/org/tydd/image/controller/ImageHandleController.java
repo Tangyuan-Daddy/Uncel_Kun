@@ -26,7 +26,7 @@ import javax.annotation.Resource;
 @Slf4j
 @Controller
 @RequestMapping(value = "image")
-@Api(value="图片工具", description="提供图片相关的工具" )
+@Api(tags = "图片工具")
 public class ImageHandleController {
 
     @Resource

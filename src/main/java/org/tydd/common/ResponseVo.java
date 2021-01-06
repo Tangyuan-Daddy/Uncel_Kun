@@ -1,5 +1,7 @@
 package org.tydd.common;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -15,17 +17,21 @@ import static org.tydd.common.ResponseStatusConstant.SUCCESS_STATUS;
  * @Date 2020/12/1
  */
 @Data
-public class ResponseVo implements Serializable {
+@ApiModel("接口返回对象")
+public class ResponseVo<T> implements Serializable {
 
     private final static String SUCCESS_FLAG = "1";
 
     private final static String FAIL_FLAG = "2";
 
+    @ApiModelProperty("状态码")
     private int code;
 
+    @ApiModelProperty("状态说明")
     private String message;
 
-    private Object data;
+    @ApiModelProperty("数据明细")
+    private T data;
 
     public static ResponseVo success(Object data) {
         ResponseVo vo = success();
