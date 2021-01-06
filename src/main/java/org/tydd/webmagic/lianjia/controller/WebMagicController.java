@@ -1,4 +1,4 @@
-package org.tydd.controller;
+package org.tydd.webmagic.lianjia.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
