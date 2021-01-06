@@ -25,9 +25,12 @@ public class SwaggerConfig {
     @Value("${swagger.enable}")
     private boolean enableSwagger;
 
+    @Value("${swagger.host}")
+    private String host;
+
     @Bean
     public Docket createRestApi(){
-        return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).enable(enableSwagger)
+        return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).host(host).enable(enableSwagger)
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any()).build();

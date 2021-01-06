@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -96,5 +97,7 @@ public class CalculationTaxDto {
 
     /** 总期数 */
     @ApiModelProperty("总期数")
+    @Min(value = 1)
+    @Max(value = 12)
     private Integer totalPeriod;
 }
