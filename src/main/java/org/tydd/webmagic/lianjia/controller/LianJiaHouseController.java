@@ -1,5 +1,7 @@
 package org.tydd.webmagic.lianjia.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import javax.annotation.Resource;
  * @Description
  * @Date 2020/12/15
  */
+@Api(tags = "链家房产信息")
 @RestController
 @RequestMapping(value = "lianjia")
 public class LianJiaHouseController {
@@ -35,6 +38,7 @@ public class LianJiaHouseController {
      * @param batchDate 批次时间（YYYY-MM）
      * @return
      */
+    @ApiOperation(value = "获取行政区统计数据", notes = "batchDate（yyyy-MM）")
     @GetMapping(value = "/statistics/district")
     public ResponseVo getStatisticsByDistrict(String batchDate) {
         if (StringUtils.isEmpty(batchDate)) {
@@ -52,6 +56,7 @@ public class LianJiaHouseController {
      * @param queryDto
      * @return
      */
+    @ApiOperation(value = "获取小区统计数据", notes = "")
     @PostMapping(value = "/statistics/community")
     public ResponseVo getStatisticsByCommunity(@RequestBody LianJiaHouseQueryDto queryDto) {
         if (StringUtils.isEmpty(queryDto.getBatchDate())) {
@@ -66,6 +71,7 @@ public class LianJiaHouseController {
      * @param batchDate 批次时间（YYYY-MM）
      * @return
      */
+    @ApiOperation(value = "生成统计数据", notes = "batchDate（yyyy-MM）")
     @GetMapping(value = "/statistics/district/build")
     public ResponseVo buildStatisticsByDistrict(@RequestParam("batchDate") String batchDate) {
         LianJiaHouseQueryDto queryDto = new LianJiaHouseQueryDto();
