@@ -25,7 +25,7 @@ function calculationTax() {
     $.ajax({
         type: "post",
         dataType:'json',
-        url: "http://127.0.0.1:7001/tydd/tax/calculation/month",
+        url: "http://182.92.230.190/tydd/tax/calculation/month",
         contentType: 'application/json',
         data: JSON.stringify($("#taxForm").serializeJson()),
         success: function(data){
