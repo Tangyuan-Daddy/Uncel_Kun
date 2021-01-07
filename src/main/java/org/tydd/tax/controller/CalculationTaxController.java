@@ -5,10 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.tydd.common.ResponseVo;
 import org.tydd.tax.dto.CalculationTaxDto;
 import org.tydd.tax.service.ICalculationTaxService;
@@ -23,6 +20,7 @@ import javax.annotation.Resource;
  * @Description 个税计算
  * @Date 2020/12/29
  */
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Api(tags = "个人所得税")
 @Slf4j
 @RestController
