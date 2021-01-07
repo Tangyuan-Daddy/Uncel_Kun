@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>个税计算器</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+        .footer {
+            background: #404040;
+            height: 200px;
+        }
+        .text-white {
+            color:#FFFFFF;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="page-header">
+        <h1>薪资计算器</h1>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <form class="form-horizontal" name="taxForm" id="taxForm">
+                <div class="form-group">
+                    <label for="preTaxIncome" class="col-sm-2 control-label">税前收入（月薪）</label>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="preTaxIncome" placeholder="税前收入（月薪）"/>
+                            <div class="input-group-addon">¥</div>
+                        </div>
+                    </div>
+                    <label for="preTaxIncome" class="col-sm-2 control-label">选择期数</label>
+                    <div class="col-sm-2">
+                            <select class="form-control" id="totalPeriod" name="totalPeriod">
+                                <option value="1">1期</option>
+                                <option value="2">2期</option>
+                                <option value="3">3期</option>
+                                <option value="4">4期</option>
+                                <option value="5">5期</option>
+                                <option value="6">6期</option>
+                                <option value="7">7期</option>
+                                <option value="8">8期</option>
+                                <option value="9">9期</option>
+                                <option value="10">10期</option>
+                                <option value="11">11期</option>
+                                <option value="12" selected="">12期</option>
+                            </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" class="btn btn-primary btn-block" id="countBtn">计 算</button>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p>五险一金</p>
+
+                        <div class="form-group">
+                            <label for="housingProvidentFundRatio" class="col-sm-4 control-label">住房公积金缴纳比例</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="housingProvidentFundRatio" name="housingProvidentFundRatio" placeholder="缴纳比例" value="8" />
+                                    <div class="input-group-addon">%</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="endowmentInsuranceRatio" class="col-sm-4 control-label">养老保险缴纳比例</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="endowmentInsuranceRatio" name="endowmentInsuranceRatio" placeholder="缴纳比例" value="8"/>
+                                    <div class="input-group-addon">%</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="medicalInsuranceRatio" class="col-sm-4 control-label">医疗保险缴纳比例</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="medicalInsuranceRatio" name="medicalInsuranceRatio" placeholder="缴纳比例" value="2"/>
+                                    <div class="input-group-addon">%</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="unemploymentInsuranceRatio" class="col-sm-4 control-label">失业保险缴纳比例</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="unemploymentInsuranceRatio" name="unemploymentInsuranceRatio" placeholder="缴纳比例" value="0"/>
+                                    <div class="input-group-addon">%</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="employmentInjuryInsuranceRatio" class="col-sm-4 control-label">工伤保险缴纳比例</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="employmentInjuryInsuranceRatio" name="employmentInjuryInsuranceRatio" placeholder="缴纳比例" value="0"/>
+                                    <div class="input-group-addon">%</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maternityInsuranceRatio" class="col-sm-4 control-label">生育保险缴纳比例</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="maternityInsuranceRatio" name="maternityInsuranceRatio" placeholder="缴纳比例" value="0"/>
+                                    <div class="input-group-addon">%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <p>个税专项附加扣除</p>
+                        <div class="form-group">
+                            <label for="maternityInsuranceRatio" class="col-sm-4 control-label">
+                                <abbr title="纳税人的子女接受全日制学历教育的相关支出，按照每个子女每月1000元的标准定额扣除。" class="initialism">子女教育</abbr>
+                            </label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="childEducation" value="1"> 是
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="childEducation" value="2" checked="true"> 否
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maternityInsuranceRatio" class="col-sm-4 control-label">
+                                <abbr title="纳税人本人或者配偶单独或者共同使用商业银行或者住房公积金个人住房贷款为本人或者其配偶购买中国境内住房，发生的首套住房贷款利息支出，在实际发生贷款利息的年度，按照每月1000元的标准定额扣除，扣除期限最长不超过240个月。纳税人只能享受一次首套住房贷款的利息扣除。" class="initialism">
+                                    住房贷款
+                                </abbr>
+                            </label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="housingLoan" value="1"> 是
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="housingLoan" value="2" checked="true"> 否
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maternityInsuranceRatio" class="col-sm-4 control-label">
+                                <abbr title="纳税人在主要工作城市没有自有住房而发生的住房租金支出，可以按照以下标准定额扣除：（一）直辖市、省会（首府）城市、计划单列市以及国务院确定的其他城市，扣除标准为每月1500元；（二）除第一项所列城市以外，市辖区户籍人口超过100万的城市，扣除标准为每月1100元；市辖区户籍人口不超过100万的城市，扣除标准为每月800元。" class="initialism">
+                                    住房租金
+                                </abbr>
+                            </label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="housingRent" value="1"> 是
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="housingRent" value="2" checked="true"> 否
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maternityInsuranceRatio" class="col-sm-4 control-label">
+                                <abbr title="纳税人在中国境内接受学历（学位）继续教育的支出，在学历（学位）教育期间按照每月400元定额扣除。同一学历（学位）继续教育的扣除期限不能超过48个月。" class="initialism">
+                                    继续教育-学历教育
+                                </abbr>
+                            </label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="continuingEducationA" value="1"> 是
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="continuingEducationA" value="2" checked="true"> 否
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--<div class="form-group">
+                            <label for="maternityInsuranceRatio" class="col-sm-4 control-label">继续教育-职业资格</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="continuingEducationB" value="1"> 是
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="continuingEducationB" value="2" checked="true"> 否
+                                    </label>
+                                </div>
+                            </div>
+                        </div>-->
+
+                        <div class="form-group">
+                            <label for="maternityInsuranceRatio" class="col-sm-4 control-label">
+                                <abbr title="纳税人赡养一位及以上被赡养人的赡养支出，统一按照以下标准定额扣除：（一）纳税人为独生子女的，按照每月2000元的标准定额扣除；（二）纳税人为非独生子女的，由其与兄弟姐妹分摊每月2000元的扣除额度，每人分摊的额度不能超过每月1000元。可以由赡养人均摊或者约定分摊，也可以由被赡养人指定分摊。约定或者指定分摊的须签订书面分摊协议，指定分摊优先于约定分摊。具体分摊方式和额度在一个纳税年度内不能变更。" class="initialism">
+                                    赡养老人
+                                </abbr>
+                            </label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="supportOldMan" value="1"> 独占
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="supportOldMan" value="3"> 平分
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="supportOldMan" value="2" checked="true"> 否
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="panel panel-default" style="min-height: 500px">
+        <div class="panel-body">
+            <p class="lead text-primary">薪资计算结果：</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>税前总收入（全年）：</strong><span id="preTaxIncome">0</span></p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>税后总收入（全年）：</strong><span id="afterTaxIncome">0</span></p>
+                </div>
+            </div>
+            <hr>
+            <div id="resultDiv"></div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="row footer-top" style="padding-top: 25px">
+            <h3 class="text-white text-center">Tang Yuan Daddy</h3>
+            <p class="text-center"><a class="text-white" href="https://www.cnblogs.com/tydd">My Blog</a></p>
+            <p class="text-center"><a class="text-white" href="mailto:#">min_kun@foxmail.com</a></p>
+        </div>
+    </div>
+</footer>
+
+<script type="application/xhtml+xml" id="template-view">
+    <div class="row">
+        <div class="col-md-6">
+            <p class="text-lowercase"><strong>期数：</strong>第${period}期</p>
+            <p class="text-lowercase"><strong>税后收入：</strong>${afterTaxIncome} ¥</p>
+            <p class="text-lowercase"><strong>缴纳税金：</strong>${taxes} ¥</p>
+            <p class="text-lowercase"><strong>适用税率：</strong>${taxRate}%</p>
+            <p class="text-lowercase"><strong>累计已缴纳税金：</strong>${totalTaxes} ¥</p>
+            <p class="text-lowercase"><strong>累计应纳税所得额：</strong>${totalTaxableIncome} ¥</p>
+        </div>
+        <div class="col-md-6">
+            <p class="text-lowercase"><strong>住房公积金：</strong>${housingProvidentFund} ¥</p>
+            <p class="text-lowercase"><strong>养老保险：</strong>${endowmentInsurance} ¥</p>
+            <p class="text-lowercase"><strong>医疗保险：</strong>${medicalInsurance} ¥</p>
+            <p class="text-lowercase"><strong>失业保险：</strong>${unemploymentInsurance} ¥</p>
+            <p class="text-lowercase"><strong>工伤保险：</strong>${employmentInjuryInsurance} ¥</p>
+            <p class="text-lowercase"><strong>生育保险：</strong>${maternityInsurance} ¥</p>
+        </div>
+    </div>
+</script>
+<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+<script src="../js/tax.js"></script>
+</body>
+</html>
