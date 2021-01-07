@@ -168,6 +168,10 @@ public class CalculationTaxServiceImpl implements ICalculationTaxService {
     private SpecialDeductionVo getSpecialDeduction(CalculationTaxDto calculationTax) {
         SpecialDeductionVo specialDeduction = new SpecialDeductionVo();
         Double preTaxIncome = calculationTax.getPreTaxIncome();
+        if (CHECK_FLAG.equals(calculationTax.getCustomBase())) {
+            // 自定义社保基数
+            preTaxIncome = Double.valueOf(calculationTax.getBaseNumber());
+        }
         specialDeduction.setHousingProvidentFund((preTaxIncome / 100) * calculationTax.getHousingProvidentFundRatio());
         specialDeduction.setEmploymentInjuryInsurance((preTaxIncome / 100) * calculationTax.getEmploymentInjuryInsuranceRatio());
         specialDeduction.setEndowmentInsurance((preTaxIncome / 100) * calculationTax.getEndowmentInsuranceRatio());

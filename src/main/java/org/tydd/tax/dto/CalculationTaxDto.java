@@ -100,4 +100,10 @@ public class CalculationTaxDto {
     @Min(value = 1)
     @Max(value = 12)
     private Integer totalPeriod;
+
+    @ApiModelProperty("是否自定义社保基数（1：有 2：无）")
+    private String customBase;
+
+    @ApiModelProperty("社保基数")
+    private Integer baseNumber;
 }
