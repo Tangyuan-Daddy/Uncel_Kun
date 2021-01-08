@@ -23,7 +23,7 @@ toastr.options.positionClass = 'toast-bottom-right';
 
 function calculationTax() {
     const formJson = $("#taxForm").serializeJson();
-    console.log(formJson);
+    //console.log(formJson);
     $.ajax({
         type: "post",
         dataType:'json',
