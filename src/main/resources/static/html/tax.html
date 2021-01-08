@@ -8,6 +8,7 @@
     <title>薪资计算器</title>
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
     <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
     <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
     <!--[if lt IE 9]>
@@ -34,14 +35,14 @@
         <div class="panel-body">
             <form class="form-horizontal" name="taxForm" id="taxForm">
                 <div class="form-group">
-                    <label for="preTaxIncome" class="col-sm-2 control-label">税前收入（月薪）</label>
+                    <label class="col-sm-2 control-label">税前收入（月薪）</label>
                     <div class="col-sm-4">
                         <div class="input-group">
                             <input type="text" class="form-control" name="preTaxIncome" placeholder="税前收入（月薪）"/>
                             <div class="input-group-addon">¥</div>
                         </div>
                     </div>
-                    <label for="preTaxIncome" class="col-sm-2 control-label">选择期数</label>
+                    <label class="col-sm-2 control-label">选择期数</label>
                     <div class="col-sm-2">
                             <select class="form-control" id="totalPeriod" name="totalPeriod">
                                 <option value="1">1期</option>
@@ -235,22 +236,33 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">
+                                自定义社保基数
+                            </label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="baseNumber" disabled/>
+                                    <div class="input-group-addon">
+                                        是否自定义
+                                        <input type="checkbox" name="customBase"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6"></div>
+                </div>
             </form>
         </div>
     </div>
 
-    <div class="panel panel-default" style="min-height: 500px">
+    <div class="panel panel-default" style="min-height: 300px">
+        <div class="panel-heading">薪资计算结果</div>
         <div class="panel-body">
-            <p class="lead text-primary">薪资计算结果：</p>
-            <div class="row">
-                <div class="col-md-6">
-                    <p><strong>税前总收入（全年）：</strong><span id="preTaxIncome">0</span></p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>税后总收入（全年）：</strong><span id="afterTaxIncome">0</span></p>
-                </div>
-            </div>
-            <hr>
             <div id="resultDiv"></div>
         </div>
     </div>
@@ -260,16 +272,27 @@
     <div class="container">
         <div class="row footer-top" style="padding-top: 25px">
             <h3 class="text-white text-center">Tang Yuan Daddy</h3>
-            <p class="text-center"><a class="text-white" href="https://www.cnblogs.com/tydd">My Blog</a></p>
+            <p class="text-center"><a class="text-white" href="https://www.cn9blogs.com/tydd">My Blog</a></p>
             <p class="text-center"><a class="text-white" href="mailto:#">min_kun@foxmail.com</a></p>
         </div>
     </div>
 </footer>
 
+<script type="application/xhtml+xml" id="template-summary">
+    <div class="row">
+        <div class="col-md-6">
+            <p><strong class="text-danger">税前总收入（全年）：</strong><span id="preTaxIncome">${preTaxIncome}</span></p>
+        </div>
+        <div class="col-md-6">
+            <p><strong class="text-danger">税后总收入（全年）：</strong><span id="afterTaxIncome">${afterTaxIncome}</span></p>
+        </div>
+    </div>
+</script>
+
 <script type="application/xhtml+xml" id="template-view">
     <div class="row">
         <div class="col-md-6">
-            <p class="text-lowercase"><strong>期数：</strong>第${period}期</p>
+            <p class="text-lowercase"><strong>期数：</strong><span class="text-danger">第${period}期</span></p>
             <p class="text-lowercase"><strong>税后收入：</strong>${afterTaxIncome} ¥</p>
             <p class="text-lowercase"><strong>缴纳税金：</strong>${taxes} ¥</p>
             <p class="text-lowercase"><strong>适用税率：</strong>${taxRate}%</p>
@@ -290,6 +313,8 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
 <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
-<script src="http://182.92.230.190/statistics/js/tax.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<!--<script src="http://182.92.230.190/statistics/js/tax.js"></script>-->
+<script src="../js/tax.js"></script>
 </body>
 </html>

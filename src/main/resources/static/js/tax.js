@@ -19,6 +19,8 @@ $.fn.serializeJson = function() {
     return serializeObj;
 };
 
+toastr.options.positionClass = 'toast-bottom-right';
+
 function calculationTax() {
     const formJson = $("#taxForm").serializeJson();
     console.log(formJson);
@@ -29,19 +31,22 @@ function calculationTax() {
         contentType: 'application/json',
         data: JSON.stringify($("#taxForm").serializeJson()),
         success: function(data){
-            console.log(data);
             if (data.code == 1) {
+                toastr.success('计算完成。');
                 buildResultDiv(data.data);
+            } else {
+                toastr.warning('计算异常。');
             }
         }
     });
 }
 
 function buildResultDiv(data) {
-    $("#preTaxIncome").html(data.preTaxIncome);
-    $("#afterTaxIncome").html(data.afterTaxIncome);
-    const viewList = data.viewList;
     let replaceHtml = '';
+    const templateSummaryHtml = $('#template-summary').html();
+    replaceHtml += templateSummaryHtml.replace('${preTaxIncome}', data.preTaxIncome).replace('${afterTaxIncome}', data.afterTaxIncome);
+    replaceHtml += "<hr>";
+    const viewList = data.viewList;
     for (let i = 0; i < viewList.length; i++) {
         const view = viewList[i];
         const templateHtml = $('#template-view').html();
@@ -68,6 +73,18 @@ function clickCountButton() {
     calculationTax();
 }
 
+function openBaseNumberInput() {
+    if ($("input[name='customBase']").prop('checked')) {
+        $("input[name='baseNumber']").removeAttr('disabled');
+    } else {
+        $("input[name='baseNumber']").attr('disabled', 'disabled');
+        $("input[name='baseNumber']").val('');
+    }
+}
+
 $(function(){
     $("#countBtn").click(function(){clickCountButton()});
+    $("input[name='customBase']").click(function () {
+        openBaseNumberInput();
+    });
 });
